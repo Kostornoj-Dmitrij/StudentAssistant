@@ -1,0 +1,7 @@
+﻿services:
+  telegram-bot:
+    build: .
+    container_name: project_assistant_bot
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

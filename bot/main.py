@@ -1,0 +1,38 @@
+﻿from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
+from handlers import start, common, questions, tools
+from services.database import db
+from config import TELEGRAM_BOT_TOKEN
+import logging
+import asyncio
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("bot.log"),
+        logging.StreamHandler(),
+    ]
+)
+
+
+async def main():
+    await db.init_database()
+
+    storage = MemoryStorage()
+    bot = Bot(token=TELEGRAM_BOT_TOKEN)
+    dp = Dispatcher(storage=storage)
+
+    dp.include_routers(
+        start.router,
+        questions.router,
+        tools.router,
+        common.router
+    )
+
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
