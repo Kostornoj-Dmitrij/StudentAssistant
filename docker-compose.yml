@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: ./bot
+    container_name: project_assistant_bot
+    volumes:
+      - ./data:/app/data
+      - ./knowledge_base:/app/knowledge_base
+    env_file:
+      - .env
+    environment:
+      - RAG_API_URL=${RAG_API_URL}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      rag-api:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - project_network
+
+  rag-api:
+    build: ./rag_api
+    container_name: project_assistant_rag_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./knowledge_base:/app/knowledge_base
+      - ./rag_api/chroma_db:/app/chroma_db
+      - ./rag_api/logs:/app/logs
+    env_file:
+      - .env
+    environment:
+      - LLM_BASE_URL=${LLM_BASE_URL}
+      - LLM_MODEL=${LLM_MODEL}
+    depends_on:
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - project_network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: project_assistant_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - project_network
+
+volumes:
+  ollama_data:
+
+networks:
+  project_network:
+    driver: bridge

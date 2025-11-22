@@ -15,11 +15,7 @@ async def start_question_flow(callback: types.CallbackQuery, state: FSMContext):
         pass
 
     await callback.message.answer(
-        "💬 Задайте ваш вопрос по проектному обучению:\n\n"
-        "Например:\n"
-        "• Как составить техническое задание?\n"
-        "• Какие этапы в Scrum?\n"
-        "• Как распределить роли в команде?",
+        "💬 Напишите ваш вопрос по проектному обучению:",
         reply_markup=KeyboardBuilder.back_button_kb()
     )
     await state.set_state(QuestionStates.waiting_question)
@@ -29,56 +25,89 @@ async def start_question_flow(callback: types.CallbackQuery, state: FSMContext):
 async def handle_question(message: types.Message, state: FSMContext):
     question = message.text
 
-    processing_msg = await message.answer("🔍 Ищу информацию в базе знаний...")
+    processing_msg = await message.answer("🔍 Получение информации из базы знаний...")
 
     try:
         answer = await RAGClient.get_answer(question, message.from_user.id)
 
-        await processing_msg.delete()
-        await message.answer(answer, reply_markup=KeyboardBuilder.back_button_kb())
+        await processing_msg.edit_text(
+            f"🤖 Ответ на ваш вопрос:\n\n{answer}",
+            reply_markup=KeyboardBuilder.back_to_start_kb()
+        )
 
     except Exception as e:
-        await processing_msg.delete()
-        await message.answer(
+        await processing_msg.edit_text(
             "❌ Произошла ошибка при обработке запроса. Попробуйте позже.",
-            reply_markup=KeyboardBuilder.back_button_kb()
+            reply_markup=KeyboardBuilder.back_to_start_kb()
         )
 
     await state.clear()
 
 
-@router.callback_query(F.data == 'project_methodology')
-async def project_methodology_menu(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.edit_text(
-        "📚 Выберите тему по методологии проектов:",
-        reply_markup=KeyboardBuilder.methodology_kb()
+@router.callback_query(F.data == 'examples')
+async def show_examples(callback: types.CallbackQuery, state: FSMContext):
+    try:
+        await callback.message.delete()
+    except:
+        pass
+
+    examples_text = """
+📋 *Примеры вопросов, которые можно задать:*
+
+*Планирование проекта:*
+• Как составить план проекта?
+• Какие этапы должны быть в студенческом проекте?
+• Как оценить время на выполнение задач?
+
+*Методологии:*
+• Что такое Scrum и как его применять?
+• В чем разница между Agile и Waterfall?
+• Как проводить ежедневные стендапы?
+
+*Документация:*
+• Как оформить техническое задание?
+• Какая документация нужна для проекта?
+• Как вести протоколы встреч?
+
+*Командная работа:*
+• Как распределить роли в команде?
+• Как эффективно проводить командные встречи?
+• Как разрешать конфликты в команде?
+"""
+
+    await callback.message.answer(
+        examples_text,
+        reply_markup=KeyboardBuilder.back_button_kb(),
+        parse_mode="Markdown"
     )
 
 
-@router.callback_query(F.data.startswith('method_'))
-async def handle_methodology_topic(callback: types.CallbackQuery, state: FSMContext):
-    topic = callback.data.replace('method_', '')
-
-    topic_questions = {
-        'scrum': "Расскажи подробно о методологии Scrum: основные принципы, роли, артефакты и церемонии",
-        'agile': "Что такое Agile манифест и основные принципы гибкой разработки?",
-        'kanban': "Как работает методология Kanban и её отличия от Scrum?",
-        'devops': "Что такое DevOps практики в проектной деятельности?",
-        'planning': "Как правильно планировать задачи в студенческом проекте?",
-        'documentation': "Какая документация должна быть в студенческом проекте и как её вести?"
-    }
-
-    question = topic_questions.get(topic, "Расскажи о методологии проектов")
-
-    processing_msg = await callback.message.answer("🔍 Ищу информацию...")
-
+@router.callback_query(F.data == 'about')
+async def show_about(callback: types.CallbackQuery, state: FSMContext):
     try:
-        answer = await RAGClient.get_answer(question, callback.from_user.id)
-        await processing_msg.delete()
-        await callback.message.answer(answer, reply_markup=KeyboardBuilder.back_to_methodology_kb())
-    except Exception as e:
-        await processing_msg.delete()
-        await callback.message.answer(
-            "❌ Произошла ошибка. Попробуйте позже.",
-            reply_markup=KeyboardBuilder.back_to_methodology_kb()
-        )
+        await callback.message.delete()
+    except:
+        pass
+
+    about_text = """
+🤖 *О боте*
+
+Я - ИИ-ассистент для студентов, работающих над проектами. Моя задача - помогать вам с методологическими вопросами проектной деятельности.
+
+*Что я умею:*
+• Отвечать на вопросы по управлению проектами
+• Консультировать по методологиям (Agile, Scrum, Kanban)
+• Помогать с документацией и планированием
+• Давать советы по командной работе
+
+*Особенности:*
+• Ответы основаны на проверенной базе знаний
+• Использую RAG-архитектуру для точности
+• Постоянно обучаюсь на новых материалах
+"""
+
+    await callback.message.answer(
+        about_text,
+        reply_markup=KeyboardBuilder.back_button_kb(),
+        parse_mode="Markdown"
+    )
