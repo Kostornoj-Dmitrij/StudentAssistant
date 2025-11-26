@@ -26,7 +26,6 @@ class QuestionResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Инициализация при запуске"""
     logger.info("Initializing RAG API...")
     await vector_store.initialize()
 

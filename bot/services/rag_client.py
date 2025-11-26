@@ -8,7 +8,7 @@ RAG_API_URL = os.getenv('RAG_API_URL', 'http://localhost:8000')
 class RAGClient:
     @staticmethod
     async def get_answer(question: str, user_id: int) -> str:
-        """Реальный запрос к RAG API"""
+        """Запрос к RAG API"""
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
