@@ -37,18 +37,16 @@ services:
       - ./knowledge_base:/app/knowledge_base
       - ./rag_api/chroma_db:/app/chroma_db
       - ./rag_api/logs:/app/logs
-      - ./rag_api/scripts:/app/scripts
     env_file:
       - .env
     environment:
       - LLM_BASE_URL=${LLM_BASE_URL}
       - LLM_MODEL=${LLM_MODEL}
-      - PYTHONPATH=/app
     depends_on:
       ollama:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
