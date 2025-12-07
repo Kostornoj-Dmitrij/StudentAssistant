@@ -7,15 +7,23 @@ services:
     volumes:
       - ./data:/app/data
       - ./knowledge_base:/app/knowledge_base
+      - ./bot/logs:/app/logs
     env_file:
       - .env
     environment:
       - RAG_API_URL=${RAG_API_URL}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - DATABASE_URL=${DATABASE_URL}
+      - LOG_LEVEL=INFO
     depends_on:
       rag-api:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import requests; requests.get('http://rag-api:8000/health', timeout=5)" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: unless-stopped
     networks:
       - project_network
