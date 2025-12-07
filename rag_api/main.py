@@ -35,25 +35,6 @@ async def health_check():
     return {"status": "healthy"}
 
 
-@app.post("/ask", response_model=QuestionResponse)
-async def ask_question(request: QuestionRequest):
-    try:
-        relevant_docs = await vector_store.search(request.question, top_k=3)
-
-        answer = await llm_client.generate_answer(
-            question=request.question,
-            context=relevant_docs
-        )
-
-        sources = [doc.get('source', 'unknown') for doc in relevant_docs]
-
-        return QuestionResponse(answer=answer, sources=sources)
-
-    except Exception as e:
-        logger.error(f"Error processing question: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-
 if __name__ == "__main__":
     import uvicorn
 
