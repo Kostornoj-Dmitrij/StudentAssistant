@@ -106,34 +106,23 @@ class KnowledgeProcessor:
             return []
 
     def _split_text(self, text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]:
-        """Разбивка текста на семантически осмысленные чанки с перекрытием"""
-        import re
-
-        sentence_endings = re.compile(r'(?<=[.!?])\s+')
-        sentences = sentence_endings.split(text)
-
+        """Разбивка текста на чанки с перекрытием"""
         chunks = []
-        current_chunk = []
-        current_length = 0
+        start = 0
 
-        for sentence in sentences:
-            sentence_length = len(sentence)
+        while start < len(text):
+            end = start + chunk_size
 
-            if current_length + sentence_length > chunk_size and current_chunk:
-                chunk_text = ' '.join(current_chunk)
-                chunks.append(chunk_text)
+            if end < len(text):
+                while end > start and text[end] not in ['.', '!', '?', '\n']:
+                    end -= 1
+                if end == start:
+                    end = start + chunk_size
 
-                overlap_sentences = int(len(current_chunk) * 0.3)  # 30% перекрытие
-                current_chunk = current_chunk[-overlap_sentences:] if overlap_sentences > 0 else []
-                current_length = sum(len(s) for s in current_chunk)
+            chunk = text[start:end].strip()
+            if chunk:
+                chunks.append(chunk)
 
-            current_chunk.append(sentence)
-            current_length += sentence_length
+            start = end - overlap
 
-        if current_chunk:
-            chunks.append(' '.join(current_chunk))
-
-        chunks = [chunk for chunk in chunks if len(chunk) >= 50]
-
-        logger.debug(f"Split text into {len(chunks)} chunks")
         return chunks
