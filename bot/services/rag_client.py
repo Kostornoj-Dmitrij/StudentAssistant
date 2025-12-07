@@ -28,7 +28,7 @@ class RAGClient:
                         return answer
                     else:
                         logger.error(f"RAG API error: {response.status}")
-                        return ""
+                        return "Извините, сервис временно недоступен. Попробуйте позже."
 
         except aiohttp.ClientError as e:
             logger.error(f"Connection error to RAG API: {e}")
