@@ -10,17 +10,21 @@ logger = logging.getLogger(__name__)
 class KnowledgeProcessor:
     def __init__(self, knowledge_base_path: str = "/app/knowledge_base"):
         self.knowledge_base_path = knowledge_base_path
+        logger.info(f"Initialized KnowledgeProcessor with path: {knowledge_base_path}")
 
     def process_knowledge_base(self) -> List[Dict[str, str]]:
         """Обработка всей базы знаний и создание чанков"""
+        logger.info(f"Starting processing of knowledge base at: {self.knowledge_base_path}")
         documents = []
 
         for root, dirs, files in os.walk(self.knowledge_base_path):
             for file in files:
                 file_path = os.path.join(root, file)
+                logger.debug(f"Processing file: {file_path}")
                 file_docs = self._process_file(file_path)
                 documents.extend(file_docs)
 
+        logger.info(f"Processing complete")
         logger.info(f"Processed {len(documents)} document chunks")
         return documents
 
