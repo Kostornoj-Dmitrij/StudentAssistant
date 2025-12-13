@@ -1,12 +1,12 @@
 ﻿import asyncio
 import sys
 import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from services.knowledge_processor import KnowledgeProcessor
 from services.vector_store import VectorStore
 import logging
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
