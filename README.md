@@ -78,3 +78,4 @@ docker start project_assistant_bot
 ```
 docker exec -it project_assistant_rag_api python scripts/initial_setup.py
 ```
+
