@@ -19,6 +19,9 @@ logging.basicConfig(
 
 async def main():
     await db.init_database()
+    await db.seed_test_data()
+
+    logging.info("База данных инициализирована")
 
     storage = MemoryStorage()
     bot = Bot(token=TELEGRAM_BOT_TOKEN)
