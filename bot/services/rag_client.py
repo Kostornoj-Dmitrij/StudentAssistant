@@ -1,4 +1,6 @@
-﻿import aiohttp
+﻿import asyncio
+
+import aiohttp
 import logging
 import os
 
@@ -7,35 +9,46 @@ RAG_API_URL = os.getenv('RAG_API_URL', 'http://localhost:8000')
 
 class RAGClient:
     @staticmethod
-    async def get_answer(question: str, user_id: int) -> str:
+    async def get_answer(question: str, user_id: int, max_retries: int = 3) -> str:
         """Запрос к RAG API"""
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                        f"{RAG_API_URL}/ask",
-                        json={"question": question, "user_id": user_id},
-                        timeout=30
-                ) as response:
+        last_error = None
 
-                    if response.status == 200:
-                        data = await response.json()
-                        answer = data.get('answer', 'Не удалось получить ответ')
-                        sources = data.get('sources', [])
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Попытка {attempt + 1}/{max_retries} получения ответа для пользователя {user_id}")
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                            f"{RAG_API_URL}/ask",
+                            json={"question": question, "user_id": user_id},
+                            timeout=30
+                    ) as response:
 
-                        if sources:
-                            answer += f"\n\n📚 Источники: {', '.join(sources)}"
+                        if response.status == 200:
+                            data = await response.json()
+                            answer = data.get('answer', 'Не удалось получить ответ')
+                            sources = data.get('sources', [])
 
-                        return answer
-                    else:
-                        logger.error(f"RAG API error: {response.status}")
-                        return "Извините, сервис временно недоступен. Попробуйте позже."
+                            if sources:
+                                answer += f"\n\n📚 Источники: {', '.join(sources)}"
 
-        except aiohttp.ClientError as e:
-            logger.error(f"Connection error to RAG API: {e}")
-            return "Ошибка подключения к сервису. Проверьте, запущен ли RAG API."
-        except Exception as e:
-            logger.error(f"Unexpected error: {e}")
-            return "Произошла непредвиденная ошибка."
+                            return answer
+                        else:
+                            last_error = f"HTTP ошибка: {response.status}"
+                            logger.error(f"RAG API error: {response.status}")
+                            if attempt < max_retries - 1:
+                                await asyncio.sleep(2 ** attempt)
+            except aiohttp.ClientError as e:
+                last_error = f"Ошибка подключения: {e}"
+                logger.error(f"Connection error to RAG API: {e}")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(2 ** attempt)
+            except Exception as e:
+                last_error = f"Непредвиденная ошибка: {e}"
+                logger.error(f"Unexpected error: {e}")
+                break
+        error_msg = f"❌ Не удалось получить ответ после {max_retries} попыток. Последняя ошибка: {last_error}"
+        logger.error(error_msg)
+        return "Извините, сервис временно недоступен. Попробуйте задать вопрос позже."
 
     @staticmethod
     async def test_connection() -> bool:
