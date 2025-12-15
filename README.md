@@ -61,6 +61,7 @@ https://docs.google.com/presentation/d/1TaUUCi4FTAWLk_CCYDL_L6UmPpI9I5Jy/edit?us
 
 2 КТ:
 Командная видео-презентация (пока в процессе записи, срок от пп до 19.12)
+
 Презентация (пара слайдов так же не готова, но в основном готова):
 https://docs.google.com/presentation/d/1qvQ2RVXq7dd3PcRCapqGdsKYHhvBQYFM/edit?usp=drive_link&ouid=104831584149150055496&rtpof=true&sd=true
 
