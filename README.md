@@ -47,6 +47,9 @@
 Ссылка на бота:
 [@SudentAssistant_bot](https://web.telegram.org/k/#@SudentAssistant_bot)
 
+Командное хранилище:
+https://drive.google.com/drive/folders/1gu0A9gm0WMWGPj7Pvcut-8oaAUArCqkV?usp=drive_link
+
 1 КТ:
 Командная видео-презентация:
 https://drive.google.com/file/d/1cI9er5NTaOPD3ixKoVKL0DfPCnW6SZi-/view?usp=drive_link
