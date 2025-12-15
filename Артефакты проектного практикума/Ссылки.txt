@@ -1,0 +1,15 @@
+github: 
+https://github.com/Kostornoj-Dmitrij/StudentAssistant
+
+Телеграм бот: 
+https://web.telegram.org/k/#@SudentAssistant_bot
+
+Командное хранилище: 
+https://drive.google.com/drive/folders/1gu0A9gm0WMWGPj7Pvcut-8oaAUArCqkV?usp=drive_link
+
+Видео работы продукта:
+https://drive.google.com/file/d/1GhaTRjbhSqFgEmS5MwldGOrc4x6DyLlt/view?usp=drive_link
+
+Тз:
+https://docs.google.com/document/d/1Pw4sJrfrElqxCwhBCOzbmEYTOGWSry8c/edit?usp=drive_link&ouid=104831584149150055496&rtpof=true&sd=true
+
