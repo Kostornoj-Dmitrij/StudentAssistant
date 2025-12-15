@@ -47,6 +47,8 @@
 Ссылка на бота:
 [@SudentAssistant_bot](https://web.telegram.org/k/#@SudentAssistant_bot)
 
+(Если по какой-то причине бот ответил "Извините, сервис временно недоступен. Попробуйте задать вопрос позже.", то задайте вопрос ещё раз, бывает что после долгого простоя у него возникает такая ошибка)
+
 Командное хранилище:
 https://drive.google.com/drive/folders/1gu0A9gm0WMWGPj7Pvcut-8oaAUArCqkV?usp=drive_link
 
