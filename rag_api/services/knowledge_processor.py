@@ -57,7 +57,7 @@ class KnowledgeProcessor:
                 for page_num, page in enumerate(reader.pages):
                     text = page.extract_text()
                     if text.strip():
-                        chunks = self._split_text(text, chunk_size=500, overlap=50)
+                        chunks = self._split_text(text, chunk_size=1000, overlap=50)
 
                         for i, chunk in enumerate(chunks):
                             documents.append({
@@ -77,7 +77,7 @@ class KnowledgeProcessor:
             doc = docx.Document(file_path)
             full_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
 
-            chunks = self._split_text(full_text, chunk_size=500, overlap=50)
+            chunks = self._split_text(full_text, chunk_size=1000, overlap=50)
             return [{
                 'content': chunk,
                 'source': os.path.basename(file_path),
@@ -94,7 +94,7 @@ class KnowledgeProcessor:
             with open(file_path, 'r', encoding='utf-8') as file:
                 text = file.read()
 
-            chunks = self._split_text(text, chunk_size=500, overlap=50)
+            chunks = self._split_text(text, chunk_size=1000, overlap=50)
             return [{
                 'content': chunk,
                 'source': os.path.basename(file_path),
@@ -105,7 +105,7 @@ class KnowledgeProcessor:
             logger.error(f"Text processing error {file_path}: {e}")
             return []
 
-    def _split_text(self, text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]:
+    def _split_text(self, text: str, chunk_size: int = 1000, overlap: int = 100) -> List[str]:
         """Разбивка текста на чанки с перекрытием"""
         chunks = []
         start = 0

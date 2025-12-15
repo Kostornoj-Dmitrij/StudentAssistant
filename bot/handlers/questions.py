@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 from keyboards.builders import KeyboardBuilder
 from models.states import QuestionStates
 from services.rag_client import RAGClient
+from services.database import db
 
 router = Router()
 
@@ -14,6 +15,10 @@ async def start_question_flow(callback: types.CallbackQuery, state: FSMContext):
     except:
         pass
 
+    user_id = callback.from_user.id
+    username = callback.from_user.username or f"user_{user_id}"
+    await db.create_user(username, user_id)
+
     await callback.message.answer(
         "💬 Напишите ваш вопрос по проектному обучению:",
         reply_markup=KeyboardBuilder.back_button_kb()
@@ -24,12 +29,14 @@ async def start_question_flow(callback: types.CallbackQuery, state: FSMContext):
 @router.message(QuestionStates.waiting_question)
 async def handle_question(message: types.Message, state: FSMContext):
     question = message.text
+    user_id = message.from_user.id
 
     processing_msg = await message.answer("🔍 Получение информации из базы знаний...")
 
     try:
         answer = await RAGClient.get_answer(question, message.from_user.id)
 
+        await db.add_question_answer(user_id, question, answer)
         await processing_msg.edit_text(
             f"🤖 Ответ на ваш вопрос:\n\n{answer}",
             reply_markup=KeyboardBuilder.back_to_start_kb()
