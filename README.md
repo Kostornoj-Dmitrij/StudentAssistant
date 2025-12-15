@@ -61,7 +61,6 @@ docker exec project_assistant_ollama ollama pull gemma3:4b
 docker-compose up --build
 ```
 
-
 Нужно убедиться, что модель появилась в списке:
 
 ```
