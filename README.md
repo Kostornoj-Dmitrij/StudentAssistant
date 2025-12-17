@@ -60,9 +60,10 @@ https://drive.google.com/file/d/1cI9er5NTaOPD3ixKoVKL0DfPCnW6SZi-/view?usp=drive
 https://docs.google.com/presentation/d/1TaUUCi4FTAWLk_CCYDL_L6UmPpI9I5Jy/edit?usp=drive_link&ouid=104831584149150055496&rtpof=true&sd=true
 
 2 КТ:
-Командная видео-презентация (пока в процессе записи, срок от пп до 19.12)
+Командная видео-презентация:
+https://drive.google.com/file/d/1wCBJLrG-Xqc2SLXos9t6qeR1_80zAPp1/view?usp=drive_link
 
-Презентация (пара слайдов так же не готова, но в основном готова):
+Презентация:
 https://docs.google.com/presentation/d/1qvQ2RVXq7dd3PcRCapqGdsKYHhvBQYFM/edit?usp=drive_link&ouid=104831584149150055496&rtpof=true&sd=true
 
 Видео-пример работы продукта:
